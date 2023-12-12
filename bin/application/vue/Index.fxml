@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controller.IndexController">
+   <children>
+      <SplitPane dividerPositions="0.23430493273542594" prefHeight="534.0" prefWidth="715.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="410.0" prefWidth="498.0" style="-fx-background-color: #8d3c3c;">
+               <children>
+                  <Label layoutX="48.0" layoutY="133.0" text="Accueil" textAlignment="CENTER" textFill="WHITE" underline="true">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="labListeReservation" layoutX="17.0" layoutY="197.0" onMouseClicked="#goToListeReservation" prefHeight="70.0" prefWidth="132.0" text="Liste des réservations" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP" wrapText="true">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="labAddReservation" layoutX="25.0" layoutY="287.0" onMouseDragged="#goToAddReservation" prefHeight="98.0" prefWidth="115.0" text="Ajouter une réservation" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP" wrapText="true">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="labSalle" layoutX="56.0" layoutY="406.0" onMouseClicked="#goToSalle" text="Salles" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="516.0" prefWidth="561.0" />
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import application.service.MainService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -42,32 +43,19 @@ public class IndexController implements Initializable {
 
     @FXML
     private ListView<String> pendingReservations;
+    
+    private MainService mainService;
 
     public void goToListeReservation(MouseEvent e) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../vue/ListeReservation.fxml"));
-        Parent listeReservationFXML = loader.load();
-        Scene sceneListeReservationFXML = new Scene(listeReservationFXML);
-        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        stage.setScene(sceneListeReservationFXML);
-        stage.show();
+    	this.mainService.navigateTo(e, "../vue/ListeReservation.fxml");
     }
 
     public void goToAddReservation(MouseEvent e) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../vue/AddReservation.fxml"));
-        Parent addReservationFXML = loader.load();
-        Scene sceneAddReservationFXML = new Scene(addReservationFXML);
-        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        stage.setScene(sceneAddReservationFXML);
-        stage.show();
+    	this.mainService.navigateTo(e, "../vue/AddReservation.fxml");
     }
 
     public void goToSalle(MouseEvent e) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../vue/Salle.fxml"));
-        Parent salleFXML = loader.load();
-        Scene sceneSalleFXML = new Scene(salleFXML);
-        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        stage.setScene(sceneSalleFXML);
-        stage.show();
+    	this.mainService.navigateTo(e, "../vue/Salle.fxml");
     }
 
     public void getDateNow() {
@@ -127,6 +115,7 @@ public class IndexController implements Initializable {
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
+      this.mainService = new MainService();
       getDateNow();
       getReservationDay();
       pendingReservations.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {

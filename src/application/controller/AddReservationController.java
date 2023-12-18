@@ -1,9 +1,13 @@
 package application.controller;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
+import application.service.MainService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,7 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-public class AddReservationController {
+public class AddReservationController implements Initializable {
 
 	@FXML
 	private Label labListeReservation;
@@ -22,58 +26,25 @@ public class AddReservationController {
 	@FXML
 	private Label labSalle;
 	
+	private MainService mainService;
+	
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		this.mainService = new MainService();		
+	}
+	
 	public void goToListeReservation(MouseEvent e) throws IOException
 	{
-		FXMLLoader loader = new FXMLLoader(
-		    getClass().getResource(
-		      "../vue/ListeReservation.fxml"
-		    )
-		  );
-		
-		Parent listeReservationFXML = loader.load();
-		Scene sceneListeReservationFXML = new Scene(listeReservationFXML);
-		
-		Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-		
-		stage.setScene(sceneListeReservationFXML);
-
-		stage.show();
+		this.mainService.navigateTo(e, "../vue/ListeReservation.fxml");
 	}
 	
 	public void goToAccueil(MouseEvent e) throws IOException
 	{
-		FXMLLoader loader = new FXMLLoader(
-		    getClass().getResource(
-		      "../vue/Index.fxml"
-		    )
-		  );
-		
-		Parent indexFXML = loader.load();
-		Scene sceneIndexFXML = new Scene(indexFXML);
-		
-		Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-		
-		stage.setScene(sceneIndexFXML);
-
-		stage.show();
+		this.mainService.navigateTo(e, "../vue/Index.fxml");
 	}
 	
 	public void goToSalle(MouseEvent e) throws IOException
 	{
-		FXMLLoader loader = new FXMLLoader(
-		    getClass().getResource(
-		      "../vue/Salle.fxml"
-		    )
-		  );
-		
-		Parent salleFXML = loader.load();
-		Scene sceneSalleFXML = new Scene(salleFXML);
-		
-		Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-		
-		stage.setScene(sceneSalleFXML);
-
-		stage.show();
-	}
-	
+		this.mainService.navigateTo(e, "../vue/Salle.fxml");
+	}	
 }

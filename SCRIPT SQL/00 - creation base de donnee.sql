@@ -31,7 +31,8 @@ CREATE TABLE `client` (
   `id_client` int(11) NOT NULL,
   `tel` varchar(20) NOT NULL,
   `mail` varchar(250) NOT NULL,
-  `nom` varchar(250) NOT NULL
+  `nom` varchar(250) NOT NULL,
+  `type` varchar(250) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -52,11 +53,11 @@ CREATE TABLE `reservation` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `reservation_tablee`
+-- Structure de la table `reservation_tables`
 --
 
-CREATE TABLE `reservation_tablee` (
-  `id_tablee` int(11) NOT NULL,
+CREATE TABLE `reservation_tables` (
+  `id_tables` int(11) NOT NULL,
   `id_reservation` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -70,17 +71,18 @@ CREATE TABLE `service` (
   `id_service` int(11) NOT NULL,
   `date_service` date NOT NULL,
   `ordre_service` int(11) NOT NULL,
-  `description` text NOT NULL
+  `description` text NOT NULL,
+  `horaire_service` varchar(250) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `tablee`
+-- Structure de la table `tables`
 --
 
-CREATE TABLE `tablee` (
-  `id_tablee` int(11) NOT NULL,
+CREATE TABLE `tables` (
+  `id_tables` int(11) NOT NULL,
   `nb_chaise` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -103,10 +105,10 @@ ALTER TABLE `reservation`
   ADD KEY `FK_Service` (`id_service`);
 
 --
--- Index pour la table `reservation_tablee`
+-- Index pour la table `reservation_tables`
 --
-ALTER TABLE `reservation_tablee`
-  ADD KEY `FK_Tablee` (`id_tablee`),
+ALTER TABLE `reservation_tables`
+  ADD KEY `FK_tables` (`id_tables`),
   ADD KEY `FK_Reservation` (`id_reservation`);
 
 --
@@ -116,10 +118,10 @@ ALTER TABLE `service`
   ADD PRIMARY KEY (`id_service`);
 
 --
--- Index pour la table `tablee`
+-- Index pour la table `tables`
 --
-ALTER TABLE `tablee`
-  ADD PRIMARY KEY (`id_tablee`);
+ALTER TABLE `tables`
+  ADD PRIMARY KEY (`id_tables`);
 
 --
 -- AUTO_INCREMENT pour les tables déchargées
@@ -144,10 +146,10 @@ ALTER TABLE `service`
   MODIFY `id_service` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT pour la table `tablee`
+-- AUTO_INCREMENT pour la table `tables`
 --
-ALTER TABLE `tablee`
-  MODIFY `id_tablee` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `tables`
+  MODIFY `id_tables` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Contraintes pour les tables déchargées
@@ -161,11 +163,11 @@ ALTER TABLE `reservation`
   ADD CONSTRAINT `FK_Service` FOREIGN KEY (`id_service`) REFERENCES `service` (`id_service`);
 
 --
--- Contraintes pour la table `reservation_tablee`
+-- Contraintes pour la table `reservation_tables`
 --
-ALTER TABLE `reservation_tablee`
+ALTER TABLE `reservation_tables`
   ADD CONSTRAINT `FK_Reservation` FOREIGN KEY (`id_reservation`) REFERENCES `reservation` (`id_reservation`),
-  ADD CONSTRAINT `FK_Tablee` FOREIGN KEY (`id_tablee`) REFERENCES `tablee` (`id_tablee`);
+  ADD CONSTRAINT `FK_tables` FOREIGN KEY (`id_tables`) REFERENCES `tables` (`id_tables`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

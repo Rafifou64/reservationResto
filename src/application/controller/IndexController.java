@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import application.entite.Reservation;
+import application.entite.ReservationWeb;
 import application.service.MainService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -51,6 +52,8 @@ public class IndexController implements Initializable {
     private ListView<String> pendingReservations;
     
     private MainService mainService;
+    ArrayList<ReservationWeb> reservations = new ArrayList<ReservationWeb>();
+
     
 
     public void goToListeReservation(MouseEvent e) throws IOException {
@@ -81,17 +84,20 @@ public class IndexController implements Initializable {
 
       try (BufferedReader reader = new BufferedReader(new FileReader(cheminFichier))) {
           String ligne;
+          String name;
+
           while ((ligne = reader.readLine()) != null) {
             nbLines++; 
 
               String[] elements = ligne.split(",");
               if (elements.length >= 4) {
-                  String displayInformation = "Nom: " + elements[1].toUpperCase() + " - " + elements[5] + " - " + elements[3] + " - " + elements[6] + " personnes";
-                  
-                  ArrayList<Reservation> reservations = new ArrayList<Reservation>();
-                  reservations.add(elements[1] + " - " + elements[3] + " - " + elements[4] + " - " + elements[5] + " - "
-                      + elements[6]);
-                  
+                if (elements[0].equals("Professionel")) {
+                  name = elements[1].toUpperCase();
+                 } else {
+                   name = elements[1].toUpperCase() + " " + elements[2];
+                 }                
+                  String displayInformation = name + " - " + elements[4] + " - " + elements[6] + " - " + elements[7] + " personnes";
+                  reservations.add(new ReservationWeb(nbLines, elements[0], name, elements[3], elements[4], elements[5], elements[6], Integer.parseInt(elements[7])));
                   pendingReservations.getItems().add(displayInformation);
               }
           }
@@ -140,11 +146,20 @@ public class IndexController implements Initializable {
       this.mainService = new MainService();
       getDateNow();
       getReservationDay();
-      pendingReservations.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-          if (newValue != null && !newValue.isEmpty()) {
-              displayAllInformation(newValue);
+      
+      insertElementInListView("src/reservationWaiting.txt");
+     
+        pendingReservations.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+           if(newValue != null && !newValue.isEmpty()) {
+             String[] parts = newValue.split(" - ");
+             for (ReservationWeb reservation : reservations) {
+               if(reservation.getName().equals(parts[0])) {
+              String email = reservation.getEmail();
+              String phone = reservation.getPhone();
+              displayAllInformation(email + " - " + phone);
+               }
+             }
           }
       });
-      insertElementInListView("src/reservationWaiting.txt");
     }
 }

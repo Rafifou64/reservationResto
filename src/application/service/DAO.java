@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 
 import application.entite.Client;
 import application.entite.Particulier;
@@ -40,7 +41,7 @@ public class DAO {
 		return null;
 	}
 	
-	//CRUD client (no update)
+	//CRUD client
 	public ArrayList<Client> getAllClient()
 	{
 		try {
@@ -121,12 +122,41 @@ public class DAO {
 				nom = ((Particulier) clientAdd).getNom() + " " + ((Particulier) clientAdd).getPrenom();
 				type = "particulier";
 			}
-			PreparedStatement insertQuery = this.connection.prepareStatement("INSERT INTO post VALUES (?, ?, ?, ?)");
+			PreparedStatement insertQuery = this.connection.prepareStatement("INSERT INTO client VALUES (?, ?, ?, ?)");
 			insertQuery.setString(1, clientAdd.getTel());
 			insertQuery.setString(2, clientAdd.getMail());
 			insertQuery.setString(3, nom);
 			insertQuery.setString(4, type);
 			insertQuery.executeUpdate();
+		}
+		catch (Exception e) {
+			System.err.println("Erreur de connexion !!");
+			System.err.println(e.getMessage());
+		}	
+	}
+	
+	public void updateClient(Client clientUpdate)
+	{
+		try {
+			String nom = null;
+			String type = null;
+			if(clientUpdate instanceof Professionnel)
+			{
+				nom = ((Professionnel) clientUpdate).getNomsociete();
+				type = "entreprise";
+			}
+			else if(clientUpdate instanceof Particulier)
+			{
+				nom = ((Particulier) clientUpdate).getNom() + " " + ((Particulier) clientUpdate).getPrenom();
+				type = "particulier";
+			}
+			PreparedStatement updateQuery = this.connection.prepareStatement("UPDATE client SET tel = ?, mail = ?, nom = ?, type = ? WHERE id_client = ?");
+			updateQuery.setString(1, clientUpdate.getTel());
+			updateQuery.setString(2, clientUpdate.getMail());
+			updateQuery.setString(3, nom);
+			updateQuery.setString(4, type);
+			updateQuery.setInt(5, clientUpdate.getId_client());
+			updateQuery.executeUpdate();
 		}
 		catch (Exception e) {
 			System.err.println("Erreur de connexion !!");
@@ -178,8 +208,7 @@ public class DAO {
 	public void addReservation(Reservation reservationAdd)
 	{
 		try {
-
-			PreparedStatement insertQuery = this.connection.prepareStatement("INSERT INTO post VALUES (?, ?, ?, ?, ?)");
+			PreparedStatement insertQuery = this.connection.prepareStatement("INSERT INTO reservation VALUES (?, ?, ?, ?, ?)");
 			insertQuery.setInt(1, reservationAdd.getNbpersonne());
 			insertQuery.setString(2, reservationAdd.getType());
 			insertQuery.setBoolean(3, reservationAdd.getIs_validated());
@@ -193,11 +222,29 @@ public class DAO {
 		}	
 	}
 	
-	public void deleteReservation(int idClient)
+	public void updateReservation(Reservation reservationUpdate)
 	{
 		try {
-			PreparedStatement deleteQuery = this.connection.prepareStatement("DELETE FROM client WHERE id = ? ");
-			deleteQuery.setInt(1, idClient);
+			PreparedStatement updateQuery = this.connection.prepareStatement("UPDATE reservation SET nb_personne = ?, type = ?, is_validated = ?, id_client = ?, id_service = ? WHERE id_reservation = ?");
+			updateQuery.setInt(1, reservationUpdate.getNbpersonne());
+			updateQuery.setString(2, reservationUpdate.getType());
+			updateQuery.setBoolean(3, reservationUpdate.getIs_validated());
+			updateQuery.setInt(4, reservationUpdate.getClient().getId_client());
+			updateQuery.setInt(5, reservationUpdate.getService().getId_service());
+			updateQuery.setInt(6, reservationUpdate.getIdReservation());
+			updateQuery.executeUpdate();
+		}
+		catch (Exception e) {
+			System.err.println("Erreur de connexion !!");
+			System.err.println(e.getMessage());
+		}
+	}
+	
+	public void deleteReservation(int idReservation)
+	{
+		try {
+			PreparedStatement deleteQuery = this.connection.prepareStatement("DELETE FROM reservation WHERE id = ? ");
+			deleteQuery.setInt(1, idReservation);
 			deleteQuery.executeUpdate();
 		}
 		catch (Exception e) {
@@ -206,22 +253,81 @@ public class DAO {
 		}
 	}
 	
-	//CRUD service
-	public ArrayList<Reservation> getAllService()
+	public ArrayList<Reservation> getAllReservationByDate(Date dateReservation)
 	{
 		try {
 			ArrayList<Reservation> lstReservationRes = new ArrayList<Reservation>();
-			Statement statement = this.connection.createStatement();
-			ResultSet resultSet = statement.executeQuery("select * from reservation");
+			
+			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT r.* FROM reservation r INNER JOIN service s ON s.id_service = r.id_service WHERE s.date_service = ? ");
+			selectQuery.setDate(1, (java.sql.Date) dateReservation);
+			ResultSet resultSet = selectQuery.executeQuery();
 			
 			while(resultSet.next())
 			{
-				//Reservation reservationRes = new Reservation();
+				Client client = this.getClientById(resultSet.getInt("id_client"));
+				Service service = this.getServiceById(resultSet.getInt("id_service"));
+				ArrayList<Tables> tables = this.getAllTableByIdReservation(resultSet.getInt("id_reservation"));
 				
-				//lstReservationRes.add(reservationRes);
+				Reservation reservationRes = new Reservation(resultSet.getInt("id_reservation"), resultSet.getInt("nb_personne"), resultSet.getString("type"), resultSet.getBoolean("is_validated"), client, service, tables);
+				
+				lstReservationRes.add(reservationRes);
 			}
 			
 			return lstReservationRes;
+		}
+		catch (Exception e) {
+			System.err.println("Erreur de connexion !!");
+			System.err.println(e.getMessage());
+		}
+		return null;	
+	}
+	
+	public ArrayList<Reservation> getAllReservationByDateAndHoraire(Date dateReservation, String horaire_service)
+	{
+		try {
+			ArrayList<Reservation> lstReservationRes = new ArrayList<Reservation>();
+			
+			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT r.* FROM reservation r INNER JOIN service s ON s.id_service = r.id_service WHERE s.date_service = ? AND s.horaire_service = ? ");
+			selectQuery.setDate(1, (java.sql.Date) dateReservation);
+			selectQuery.setString(2, horaire_service);
+			ResultSet resultSet = selectQuery.executeQuery();
+			
+			while(resultSet.next())
+			{
+				Client client = this.getClientById(resultSet.getInt("id_client"));
+				Service service = this.getServiceById(resultSet.getInt("id_service"));
+				ArrayList<Tables> tables = this.getAllTableByIdReservation(resultSet.getInt("id_reservation"));
+				
+				Reservation reservationRes = new Reservation(resultSet.getInt("id_reservation"), resultSet.getInt("nb_personne"), resultSet.getString("type"), resultSet.getBoolean("is_validated"), client, service, tables);
+				
+				lstReservationRes.add(reservationRes);
+			}
+			
+			return lstReservationRes;
+		}
+		catch (Exception e) {
+			System.err.println("Erreur de connexion !!");
+			System.err.println(e.getMessage());
+		}
+		return null;	
+	}
+	
+	//CRUD service
+	public ArrayList<Service> getAllService()
+	{
+		try {
+			ArrayList<Service> lstServiceRes = new ArrayList<Service>();
+			Statement statement = this.connection.createStatement();
+			ResultSet resultSet = statement.executeQuery("select * from service");
+			
+			while(resultSet.next())
+			{				
+				Service serviceRes = new Service(resultSet.getInt("id_service"), resultSet.getDate("date_service"), resultSet.getInt("ordre_service"), resultSet.getString("description"), resultSet.getString("horaire_service"));
+
+				lstServiceRes.add(serviceRes);
+			}
+			
+			return lstServiceRes;
 		}
 		catch (Exception e) {
 			System.err.println("Erreur de connexion !!");
@@ -253,7 +359,7 @@ public class DAO {
 		return null;			
 	}
 	
-	public void addService(Client clientAdd)
+	/*public void addService(Client clientAdd)
 	{
 		try {
 			String nom = null;
@@ -279,13 +385,13 @@ public class DAO {
 			System.err.println("Erreur de connexion !!");
 			System.err.println(e.getMessage());
 		}	
-	}
+	}*/
 	
-	public void deleteService(int idClient)
+	public void deleteService(int idService)
 	{
 		try {
-			PreparedStatement deleteQuery = this.connection.prepareStatement("DELETE FROM client WHERE id = ? ");
-			deleteQuery.setInt(1, idClient);
+			PreparedStatement deleteQuery = this.connection.prepareStatement("DELETE FROM service WHERE id = ? ");
+			deleteQuery.setInt(1, idService);
 			deleteQuery.executeUpdate();
 		}
 		catch (Exception e) {

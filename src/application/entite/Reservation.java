@@ -47,7 +47,7 @@ public class Reservation {
 		this.type = type;
 	}
 
-	public boolean isIs_validated() {
+	public boolean getIs_validated() {
 		return is_validated;
 	}
 

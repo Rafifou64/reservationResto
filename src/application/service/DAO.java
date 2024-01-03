@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import application.entite.Client;
 import application.entite.Particulier;
 import application.entite.Professionnel;
+import application.entite.Reservation;
 
 public class DAO {
 	
@@ -37,6 +38,7 @@ public class DAO {
 		return null;
 	}
 	
+	//CRUD client (no update)
 	public ArrayList<Client> getAllClient()
 	{
 		try {
@@ -99,6 +101,71 @@ public class DAO {
 	}
 	
 	public void deleteClient(int idClient)
+	{
+		try {
+			PreparedStatement deleteQuery = this.connection.prepareStatement("DELETE FROM client WHERE id = ? ");
+			deleteQuery.setInt(1, idClient);
+			deleteQuery.executeUpdate();
+		}
+		catch (Exception e) {
+			System.err.println("Erreur de connexion !!");
+			System.err.println(e.getMessage());
+		}
+	}
+	
+	//CRUD reservation
+	public ArrayList<Reservation> getAllReservation()
+	{
+		try {
+			ArrayList<Reservation> lstReservationRes = new ArrayList<Reservation>();
+			Statement statement = this.connection.createStatement();
+			ResultSet resultSet = statement.executeQuery("select * from reservation");
+			
+			while(resultSet.next())
+			{
+				//Reservation reservationRes = new Reservation();
+				
+				//lstReservationRes.add(reservationRes);
+			}
+			
+			return lstReservationRes;
+		}
+		catch (Exception e) {
+			System.err.println("Erreur de connexion !!");
+			System.err.println(e.getMessage());
+		}		
+		return null;			
+	}
+	
+	public void addReservation(Client clientAdd)
+	{
+		try {
+			String nom = null;
+			String type = null;
+			if(clientAdd instanceof Professionnel)
+			{
+				nom = ((Professionnel) clientAdd).getNomsociete();
+				type = "entreprise";
+			}
+			else if(clientAdd instanceof Particulier)
+			{
+				nom = ((Particulier) clientAdd).getNom() + " " + ((Particulier) clientAdd).getPrenom();
+				type = "particulier";
+			}
+			PreparedStatement insertQuery = this.connection.prepareStatement("INSERT INTO post VALUES (?, ?, ?, ?)");
+			insertQuery.setString(1, clientAdd.getTel());
+			insertQuery.setString(2, clientAdd.getMail());
+			insertQuery.setString(3, nom);
+			insertQuery.setString(4, type);
+			insertQuery.executeUpdate();
+		}
+		catch (Exception e) {
+			System.err.println("Erreur de connexion !!");
+			System.err.println(e.getMessage());
+		}	
+	}
+	
+	public void deleteReservation(int idClient)
 	{
 		try {
 			PreparedStatement deleteQuery = this.connection.prepareStatement("DELETE FROM client WHERE id = ? ");

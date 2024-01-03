@@ -58,7 +58,7 @@
                         <Font name="Book Antiqua" size="30.0" />
                      </font>
                   </Label>
-                  <Label layoutX="143.0" layoutY="275.0" text="X réservations à confirmer">
+                  <Label fx:id="nb_request_reservation" layoutX="143.0" layoutY="275.0" text="X réservations à confirmer">
                      <font>
                         <Font name="Book Antiqua" size="20.0" />
                      </font>

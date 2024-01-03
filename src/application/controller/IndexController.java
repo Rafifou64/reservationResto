@@ -1,8 +1,11 @@
 package application.controller;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -10,16 +13,13 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import application.entite.Reservation;
 import application.entite.ReservationWeb;
 import application.service.MainService;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -44,7 +44,6 @@ public class IndexController implements Initializable {
     @FXML
     private Label nb_reservation_day;
     
-
     @FXML
     private Label nb_request_reservation;
 
@@ -53,8 +52,7 @@ public class IndexController implements Initializable {
     
     private MainService mainService;
     ArrayList<ReservationWeb> reservations = new ArrayList<ReservationWeb>();
-
-    
+    ArrayList<ReservationWeb> deleteReservations = new ArrayList<ReservationWeb>();
 
     public void goToListeReservation(MouseEvent e) throws IOException {
     	this.mainService.navigateTo(e, "../vue/ListeReservation.fxml");
@@ -84,21 +82,15 @@ public class IndexController implements Initializable {
 
       try (BufferedReader reader = new BufferedReader(new FileReader(cheminFichier))) {
           String ligne;
-          String name;
 
           while ((ligne = reader.readLine()) != null) {
             nbLines++; 
 
               String[] elements = ligne.split(",");
-              if (elements.length >= 4) {
-                if (elements[0].equals("Professionel")) {
-                  name = elements[1].toUpperCase();
-                 } else {
-                   name = elements[1].toUpperCase() + " " + elements[2];
-                 }                
-                  String displayInformation = name + " - " + elements[4] + " - " + elements[6] + " - " + elements[7] + " personnes";
-                  reservations.add(new ReservationWeb(nbLines, elements[0], name, elements[3], elements[4], elements[5], elements[6], Integer.parseInt(elements[7])));
-                  pendingReservations.getItems().add(displayInformation);
+              if (elements.length >= 4) {              
+                String displayInformation = elements[1] + " - " + elements[3] + " - " + elements[5] + " - " + elements[6] + " personnes";
+                reservations.add(new ReservationWeb(nbLines, elements[0], elements[1], elements[2], elements[3], elements[4], elements[5], Integer.parseInt(elements[6])));
+                pendingReservations.getItems().add(displayInformation);
               }
           }
           
@@ -112,8 +104,69 @@ public class IndexController implements Initializable {
             e.printStackTrace();
         }
     }
+    
+    private void removeReservationWeb(String email) throws IOException {
+      String ligne;
+      String file = "src/reservationWaiting.txt";
 
-    private void displayAllInformation(String contenu) {
+      int nbLines = 0;
+      ArrayList <ReservationWeb> deleteReservations = new ArrayList<>();
+
+      try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+          while ((ligne = reader.readLine()) != null) {
+              nbLines++;
+              String[] elements = ligne.split(",");
+              email = email.replace(" ", "");
+              if (!email.equals(elements[2])) {
+                  deleteReservations.add(new ReservationWeb(nbLines, elements[0], elements[1].toUpperCase(), elements[2], elements[3], elements[4], elements[5], Integer.parseInt(elements[6])));
+              }
+          }
+      } catch (IOException e) {
+      }
+
+      try (PrintWriter writer = new PrintWriter(file)) {
+          writer.print("");
+      } catch (FileNotFoundException e) {
+      }
+
+        try (FileWriter writer = new FileWriter(file, true)) {
+            for (ReservationWeb deleteReservation : deleteReservations) {
+              writer.write(deleteReservation.getType() + "," +
+                  deleteReservation.getName() + "," +
+                  deleteReservation.getEmail() + "," +
+                  deleteReservation.getHour() + "," +
+                  deleteReservation.getPhone() + "," +
+                  deleteReservation.getDate() + "," +
+                  deleteReservation.getNb_person() + "\n");
+              }
+            refreshListView();
+
+        } catch (IOException e) { 
+            // Handle IOException
+        }
+    }
+
+    private void refreshListView() {
+        Platform.runLater(() -> {
+            ObservableList<String> items = FXCollections.observableArrayList();
+    
+            try (BufferedReader reader = new BufferedReader(new FileReader("src/reservationWaiting.txt"))) {
+                String ligne;
+                while ((ligne = reader.readLine()) != null) {
+                    String[] elements = ligne.split(",");
+                    String displayInformation = elements[1].toUpperCase() + " - " + elements[3] + " - " + elements[5] + " - " + elements[6] + " personnes";
+                    items.add(displayInformation);
+                }
+            } catch (IOException e) {
+                // Handle IOException
+            }
+    
+            pendingReservations.setItems(items);
+        });
+    }
+
+
+    private void displayAllInformation(String contenu) throws FileNotFoundException, IOException {
       Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
       alert.setTitle("Validation de la réservation");
       alert.setHeaderText(null);
@@ -130,9 +183,7 @@ public class IndexController implements Initializable {
           if (result.get() == validerButton) {
               System.out.println("Action Valider");
           } else if (result.get() == refuserButton) {
-              System.out.println("Action Refuser");
-          } else {
-              System.out.println("Action Annuler");
+            removeReservationWeb(contenu.split("-")[0]);
           }
 
           Platform.runLater(() -> {
@@ -151,12 +202,15 @@ public class IndexController implements Initializable {
      
         pendingReservations.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
            if(newValue != null && !newValue.isEmpty()) {
-             String[] parts = newValue.split(" - ");
              for (ReservationWeb reservation : reservations) {
-               if(reservation.getName().equals(parts[0])) {
+               if(reservation.getName().equals(newValue.split(" - ")[0])) {
               String email = reservation.getEmail();
               String phone = reservation.getPhone();
-              displayAllInformation(email + " - " + phone);
+              try {
+                displayAllInformation(email + " - " + phone);
+              } catch (IOException e) {
+                e.printStackTrace();
+              }
                }
              }
           }

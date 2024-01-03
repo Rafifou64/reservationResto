@@ -6,9 +6,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import application.entite.Reservation;
 import application.service.MainService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -40,11 +42,16 @@ public class IndexController implements Initializable {
 
     @FXML
     private Label nb_reservation_day;
+    
+
+    @FXML
+    private Label nb_request_reservation;
 
     @FXML
     private ListView<String> pendingReservations;
     
     private MainService mainService;
+    
 
     public void goToListeReservation(MouseEvent e) throws IOException {
     	this.mainService.navigateTo(e, "../vue/ListeReservation.fxml");
@@ -66,30 +73,45 @@ public class IndexController implements Initializable {
     }
 
     public void getReservationDay() {
-        nb_reservation_day.setText("6 tables réservées");
+        nb_reservation_day.setText("X tables réservées");
     }
 
     private void insertElementInListView(String cheminFichier) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(cheminFichier))) {
-            String ligne;
-            while ((ligne = reader.readLine()) != null) {
-                String[] elements = ligne.split(",");
-                if (elements.length >= 4) {
-                    String displayInformation = elements[0] + " - " + elements[1] + " - " + elements[2] + " - " + elements[4] + " - "
-                            + elements[6];
-                    pendingReservations.getItems().add(displayInformation);
-                }
-            }
+      int nbLines = 0; 
+
+      try (BufferedReader reader = new BufferedReader(new FileReader(cheminFichier))) {
+          String ligne;
+          while ((ligne = reader.readLine()) != null) {
+            nbLines++; 
+
+              String[] elements = ligne.split(",");
+              if (elements.length >= 4) {
+                  String displayInformation = "Nom: " + elements[1].toUpperCase() + " - " + elements[5] + " - " + elements[3] + " - " + elements[6] + " personnes";
+                  
+                  ArrayList<Reservation> reservations = new ArrayList<Reservation>();
+                  reservations.add(elements[1] + " - " + elements[3] + " - " + elements[4] + " - " + elements[5] + " - "
+                      + elements[6]);
+                  
+                  pendingReservations.getItems().add(displayInformation);
+              }
+          }
+          
+          if (nbLines > 0 ) {
+            nb_request_reservation.setText(nbLines + " réservations à confirmer");
+          } else {
+            nb_request_reservation.setText("0 réservations à confirmer");
+
+          }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void displayInformation(String contenu) {
+    private void displayAllInformation(String contenu) {
       Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-      alert.setTitle("Confirmation");
+      alert.setTitle("Validation de la réservation");
       alert.setHeaderText(null);
-      alert.setContentText("Voulez-vous valider ou refuser ?");
+      alert.setContentText(contenu);
 
       ButtonType validerButton = new ButtonType("Valider");
       ButtonType refuserButton = new ButtonType("Refuser");
@@ -120,7 +142,7 @@ public class IndexController implements Initializable {
       getReservationDay();
       pendingReservations.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
           if (newValue != null && !newValue.isEmpty()) {
-              displayInformation(newValue);
+              displayAllInformation(newValue);
           }
       });
       insertElementInListView("src/reservationWaiting.txt");

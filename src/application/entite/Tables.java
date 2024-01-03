@@ -1,6 +1,6 @@
 package application.entite;
 
-public class Table {
+public class Tables {
 	
 	private int numero;
 	private int nbchaise;

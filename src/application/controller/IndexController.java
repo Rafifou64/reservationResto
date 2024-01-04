@@ -7,13 +7,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 import application.entite.ReservationWeb;
+import application.service.FileService;
 import application.service.MainService;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -25,7 +24,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
 
 public class IndexController implements Initializable {
 
@@ -50,6 +48,7 @@ public class IndexController implements Initializable {
     @FXML
     private ListView<String> pendingReservations;
     
+    private FileService fileService;
     private MainService mainService;
     ArrayList<ReservationWeb> reservations = new ArrayList<ReservationWeb>();
     ArrayList<ReservationWeb> deleteReservations = new ArrayList<ReservationWeb>();
@@ -64,13 +63,6 @@ public class IndexController implements Initializable {
 
     public void goToSalle(MouseEvent e) throws IOException {
     	this.mainService.navigateTo(e, "../vue/Salle.fxml");
-    }
-
-    public void getDateNow() {
-        LocalDate date = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String formattedDate = date.format(formatter);
-        dateNow.setText("  Réservation du " + formattedDate);
     }
 
     public void getReservationDay() {
@@ -148,18 +140,7 @@ public class IndexController implements Initializable {
 
     private void refreshListView() {
         Platform.runLater(() -> {
-            ObservableList<String> items = FXCollections.observableArrayList();
-    
-            try (BufferedReader reader = new BufferedReader(new FileReader("src/reservationWaiting.txt"))) {
-                String ligne;
-                while ((ligne = reader.readLine()) != null) {
-                    String[] elements = ligne.split(",");
-                    String displayInformation = elements[1].toUpperCase() + " - " + elements[3] + " - " + elements[5] + " - " + elements[6] + " personnes";
-                    items.add(displayInformation);
-                }
-            } catch (IOException e) {
-                // Handle IOException
-            }
+            ObservableList<String> items = this.fileService.getListReservationWeb();
     
             pendingReservations.setItems(items);
         });
@@ -195,7 +176,8 @@ public class IndexController implements Initializable {
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
       this.mainService = new MainService();
-      getDateNow();
+      this.fileService = new FileService();
+      dateNow.setText("  Réservation du " + this.mainService.getDateNow());
       getReservationDay();
       
       insertElementInListView("src/reservationWaiting.txt");

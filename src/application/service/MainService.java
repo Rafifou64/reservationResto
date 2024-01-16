@@ -9,7 +9,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 
+import application.entite.Client;
+import application.entite.Particulier;
+import application.entite.Professionnel;
 import application.entite.Reservation;
+import application.entite.Service;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -18,12 +22,12 @@ import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-public class MainService implements Initializable {
+public class MainService {
 	
+
 	private DAO dao;
 	
-	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
+	public MainService() {
 		this.dao = new DAO();
 	}
 	
@@ -59,19 +63,26 @@ public class MainService implements Initializable {
 	
 	public ArrayList<Reservation> getReservationByDate(LocalDate dateReservation)
 	{
-		Date date = this.convertLocalDateToDate(dateReservation);
-		return this.dao.getAllReservationByDate(date);
+		return this.dao.getAllReservationByDate(java.sql.Date.valueOf(dateReservation));
 	}
 	
-	public Date convertLocalDateToDate(LocalDate localDate)
+	public String getDisplayReservationListView(Reservation reservation)
 	{
-		//default time zone
-		ZoneId defaultZoneId = ZoneId.systemDefault();
-        
-        //local date + atStartOfDay() + default time zone + toInstant() = Date
-        Date date = Date.from(localDate.atStartOfDay(defaultZoneId).toInstant());
-        
-        return date;
+		Service service = reservation.getService();
+		Client client = reservation.getClient();
+		
+		String libelleClient = "";
+		if(client instanceof Particulier)
+		{
+			libelleClient = ((Particulier) client).getNom().toUpperCase() + " " + ((Particulier) client).getPrenom();
+		}
+		else if(client instanceof Professionnel)
+		{
+			libelleClient = ((Professionnel) client).getNomsociete().toUpperCase();
+		}
+		
+		String dateFormatted = this.formatDate(new java.sql.Date(service.getDate_service().getTime()).toLocalDate());
+		
+		return dateFormatted + "   " + service.getHoraire_service() + "     " + libelleClient + "     " + Integer.toString(reservation.getNbpersonne()) + " personnes    " + client.getTel();
 	}
-
 }

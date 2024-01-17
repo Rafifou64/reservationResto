@@ -80,10 +80,12 @@ public class ListeReservationController implements Initializable {
 	{
 		this.dateReservation = this.datePicker.getValue();
 		this.setDateToday(this.mainService.formatDate(this.dateReservation));
+		this.getReservation();
 	}
 	
 	public void getReservation()
 	{
+		this.listViewReservation.getItems().clear();
 		this.lstReservation = this.mainService.getReservationByDate(dateReservation);
 		
 		for (int i = 0; i < lstReservation.size(); i++) {			

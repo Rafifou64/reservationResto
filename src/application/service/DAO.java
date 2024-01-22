@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import application.entite.Client;
 import application.entite.Particulier;
@@ -75,37 +77,35 @@ public class DAO {
 		return null;
 	}
 	
-	public Client getClientById(int idClient)
-	{
-		try {
-			Client clientRes = null;
-
-			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT * FROM client WHERE id_client = ? ");
-			selectQuery.setInt(1, idClient);
-			ResultSet resultSet = selectQuery.executeQuery();
-			
-			while(resultSet.next())
-			{
-				if(resultSet.getString("type").equals("entreprise"))
-				{
-					clientRes = new Professionnel(resultSet.getInt("id_client"), resultSet.getString("tel"), resultSet.getString("mail"), resultSet.getString("nom"));					
-				}
-				else if(resultSet.getString("type").equals("particulier"))
-				{
-					String nom = resultSet.getString("nom").split(" ")[0];
-					String prenom = resultSet.getString("nom").split(" ")[1];
-					clientRes = new Particulier(resultSet.getInt("id_client"), resultSet.getString("tel"), resultSet.getString("mail"), nom, prenom);					
-				}
-			}
-			
-			return clientRes;
-		}
-		catch (Exception e) {
-			System.err.println("Erreur de connexion !!");
-			System.err.println(e.getMessage());
-		}		
-		return null;			
-	}
+    public Client getClient(String critere, Object valeur) {
+      try {
+          Client clientRes = null;
+          String query = "SELECT * FROM client WHERE " + critere + " = ?";
+          try (PreparedStatement selectQuery = this.connection.prepareStatement(query)) {
+              selectQuery.setObject(1, valeur);
+              ResultSet resultSet = selectQuery.executeQuery();
+  
+              while (resultSet.next()) {
+                  String type = resultSet.getString("type");
+                  if ("entreprise".equals(type)) {
+                      clientRes = new Professionnel(resultSet.getInt("id_client"), resultSet.getString("tel"),
+                              resultSet.getString("mail"), resultSet.getString("nom"));
+                  } else if ("particulier".equals(type)) {
+                      String nom = resultSet.getString("nom").split(" ")[0];
+                      String prenom = resultSet.getString("nom").split(" ")[1];
+                      clientRes = new Particulier(resultSet.getInt("id_client"), resultSet.getString("tel"),
+                              resultSet.getString("mail"), nom, prenom);
+                  }
+              }
+          }
+  
+          return clientRes;
+      } catch (Exception e) {
+          System.err.println("Erreur de connexion !!");
+          System.err.println(e.getMessage());
+      }
+      return null;
+  }
 	
 	public void addClient(Client clientAdd)
 	{
@@ -190,7 +190,7 @@ public class DAO {
 			
 			while(resultSet.next())
 			{
-				Client client = this.getClientById(resultSet.getInt("id_client"));
+				Client client = this.getClient("id_client", resultSet.getInt("id_client"));
 				Service service = this.getServiceById(resultSet.getInt("id_service"));
 				ArrayList<Tables> tables = this.getAllTableByIdReservation(resultSet.getInt("id_reservation"));
 				
@@ -211,7 +211,7 @@ public class DAO {
 	public void addReservation(Reservation reservationAdd)
 	{
 		try {
-			PreparedStatement insertQuery = this.connection.prepareStatement("INSERT INTO reservation VALUES (?, ?, ?, ?, ?)");
+			PreparedStatement insertQuery = this.connection.prepareStatement("INSERT INTO reservation (nb_personne, type, is_validated, id_client, id_service)VALUES (?, ?, ?, ?, ?)");
 			insertQuery.setInt(1, reservationAdd.getNbpersonne());
 			insertQuery.setString(2, reservationAdd.getType());
 			insertQuery.setBoolean(3, reservationAdd.getIs_validated());
@@ -267,7 +267,7 @@ public class DAO {
 			
 			while(resultSet.next())
 			{
-				Client client = this.getClientById(resultSet.getInt("id_client"));
+				Client client = this.getClient("id_client", resultSet.getInt("id_client"));
 				Service service = this.getServiceById(resultSet.getInt("id_service"));
 				ArrayList<Tables> tables = this.getAllTableByIdReservation(resultSet.getInt("id_reservation"));
 				
@@ -297,7 +297,7 @@ public class DAO {
 			
 			while(resultSet.next())
 			{
-				Client client = this.getClientById(resultSet.getInt("id_client"));
+				Client client = this.getClient("id_client", resultSet.getInt("id_client"));
 				Service service = this.getServiceById(resultSet.getInt("id_service"));
 				ArrayList<Tables> tables = this.getAllTableByIdReservation(resultSet.getInt("id_reservation"));
 				
@@ -340,55 +340,102 @@ public class DAO {
 	}
 	
 	public Service getServiceById(int idService)
-	{
-		try {
-			Service serviceRes = null;
+  {
+    try {
+      Service serviceRes = null;
 
-			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT * FROM service WHERE id_service = ? ");
-			selectQuery.setInt(1, idService);
-			ResultSet resultSet = selectQuery.executeQuery();
-			
-			while(resultSet.next())
-			{
-				serviceRes = new Service(resultSet.getInt("id_service"), resultSet.getDate("date_service"), resultSet.getInt("ordre_service"), resultSet.getString("description"), resultSet.getString("horaire_service"));
-			}
-			
-			return serviceRes;
-		}
-		catch (Exception e) {
-			System.err.println("Erreur de connexion !!");
-			System.err.println(e.getMessage());
-		}		
-		return null;			
-	}
+      PreparedStatement selectQuery = this.connection.prepareStatement("SELECT * FROM service WHERE id_service = ? ");
+      selectQuery.setInt(1, idService);
+      ResultSet resultSet = selectQuery.executeQuery();
+      
+      while(resultSet.next())
+      {
+        serviceRes = new Service(resultSet.getInt("id_service"), resultSet.getDate("date_service"), resultSet.getInt("ordre_service"), resultSet.getString("description"), resultSet.getString("horaire_service"));
+      }
+      
+      return serviceRes;
+    }
+    catch (Exception e) {
+      System.err.println("Erreur de connexion !!");
+      System.err.println(e.getMessage());
+    }
+    return null;      
+  }
+  
+   public Service getServiceByHoraire(Date date_service, String horaire )
+    {
+      try {  
+        Service serviceRes = null;
+
+        PreparedStatement selectQuery = this.connection.prepareStatement("SELECT * FROM service WHERE date_service = ? AND horaire_service= ? ");
+        selectQuery.setDate(1, new java.sql.Date(date_service.getTime()));
+         selectQuery.setString(2, horaire);
+
+        ResultSet resultSet = selectQuery.executeQuery();
+        
+        while(resultSet.next())
+        {
+          serviceRes = new Service(resultSet.getInt("id_service"), resultSet.getDate("date_service"), resultSet.getInt("ordre_service"), resultSet.getString("description"), resultSet.getString("horaire_service"));
+        }
+        
+        return serviceRes;
+      }
+      catch (Exception e) {
+        System.err.println("Erreur de connexion !!");
+        System.err.println(e.getMessage());
+      }   
+      return null;      
+    }
+
 	
-	/*public void addService(Client clientAdd)
-	{
-		try {
-			String nom = null;
-			String type = null;
-			if(clientAdd instanceof Professionnel)
-			{
-				nom = ((Professionnel) clientAdd).getNomsociete();
-				type = "entreprise";
-			}
-			else if(clientAdd instanceof Particulier)
-			{
-				nom = ((Particulier) clientAdd).getNom() + " " + ((Particulier) clientAdd).getPrenom();
-				type = "particulier";
-			}
-			PreparedStatement insertQuery = this.connection.prepareStatement("INSERT INTO post VALUES (?, ?, ?, ?)");
-			insertQuery.setString(1, clientAdd.getTel());
-			insertQuery.setString(2, clientAdd.getMail());
-			insertQuery.setString(3, nom);
-			insertQuery.setString(4, type);
-			insertQuery.executeUpdate();
-		}
-		catch (Exception e) {
-			System.err.println("Erreur de connexion !!");
-			System.err.println(e.getMessage());
-		}	
-	}*/
+
+	 public void addService(Service service) {
+	    try {
+	        String description = "";
+	        int ordre_service = 0;
+	        String horaire = service.getHoraire_service();
+
+	        Map<String, String[]> horairesDescriptions = new HashMap<>();
+	        horairesDescriptions.put("11h30-12h30", new String[]{"1er service du midi", "1"});
+	        horairesDescriptions.put("12h30-13h30", new String[]{"2eme service du midi", "2"});
+	        horairesDescriptions.put("19h00-21h00", new String[]{"1er service du soir", "3"});
+	        horairesDescriptions.put("21h00-23h00", new String[]{"2eme service du soir", "4"});
+
+	        for (Map.Entry<String, String[]> entry : horairesDescriptions.entrySet()) {
+	            String plageHoraire = entry.getKey();
+	            String[] infoService = entry.getValue();
+	            String debutPlage = plageHoraire.split("-")[0];
+	            String finPlage = plageHoraire.split("-")[1];
+
+	            if (horaire.compareTo(debutPlage) >= 0 && horaire.compareTo(finPlage) <= 0) {
+	                ordre_service = Integer.parseInt(infoService[1]);
+	                description = infoService[0];
+	                break;
+	            }
+	        }
+
+	        PreparedStatement selectQuery = this.connection.prepareStatement("SELECT COUNT(*) FROM service WHERE date_service = ? AND ordre_service = ?");
+	        selectQuery.setDate(1, new java.sql.Date(service.getDate_service().getTime()));
+	        selectQuery.setInt(2, ordre_service);
+	        ResultSet resultSet = selectQuery.executeQuery();
+
+	        if (resultSet.next() && resultSet.getInt(1) == 0) {
+	            PreparedStatement insertQuery = this.connection.prepareStatement("INSERT INTO service(date_service, ordre_service, description, horaire_service) VALUES (?, ?, ?, ?)");
+	            insertQuery.setDate(1, new java.sql.Date(service.getDate_service().getTime()));
+	            insertQuery.setInt(2, ordre_service);
+	            insertQuery.setString(3, description);
+	            insertQuery.setString(4, service.getHoraire_service());
+	            insertQuery.executeUpdate();
+	        } else {
+	            System.out.println("La combinaison date_service et ordre_service existe déjà dans la table.");
+	        }
+
+	    } catch (Exception e) {
+	        System.err.println("Erreur ajout de service !!");
+	        System.err.println(e.getMessage());
+	    }
+	}
+
 	
 	public void deleteService(int idService)
 	{

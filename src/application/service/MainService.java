@@ -14,6 +14,8 @@ import application.entite.Particulier;
 import application.entite.Professionnel;
 import application.entite.Reservation;
 import application.entite.Service;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -85,4 +87,28 @@ public class MainService {
 		
 		return dateFormatted + "   " + service.getHoraire_service() + "     " + libelleClient + "     " + Integer.toString(reservation.getNbpersonne()) + " personnes    " + client.getTel();
 	}
+	
+    public void addReservationByWeb(String contentList) {
+      String[] elements = contentList.split(" - "); 
+      String type = elements[0]; 
+      String name = elements[1];
+      
+      String firstname = elements[1].split(" ")[1];
+      String lastname = elements[1].split(" ")[0];
+
+      String horaire = elements[2];
+      String date = elements[3];
+      String nb_person = elements[4];
+      String email = elements[5];
+      String tel = elements[6];
+      
+      if(type.equals("particulier")) {
+        Particulier particulier = new Particulier(1, tel, email, lastname, firstname); 
+        this.dao.addClient(particulier);
+      } else {
+        Professionnel professionnel = new Professionnel(1, tel, email, name); 
+        this.dao.addClient(professionnel);
+      }
+
+   }
 }

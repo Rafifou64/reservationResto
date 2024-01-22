@@ -15,7 +15,6 @@ import application.entite.ReservationWeb;
 import application.service.FileService;
 import application.service.MainService;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -80,7 +79,7 @@ public class IndexController implements Initializable {
 
               String[] elements = ligne.split(",");
               if (elements.length >= 4) {              
-                String displayInformation = elements[1] + " - " + elements[3] + " - " + elements[5] + " - " + elements[6] + " personnes";
+                String displayInformation = elements[0] + " - "+ elements[1] + " - " + elements[3] + " - " + elements[5] + " - " + elements[6] + " personnes";
                 reservations.add(new ReservationWeb(nbLines, elements[0], elements[1], elements[2], elements[3], elements[4], elements[5], Integer.parseInt(elements[6])));
                 pendingReservations.getItems().add(displayInformation);
               }
@@ -147,7 +146,7 @@ public class IndexController implements Initializable {
     }
 
 
-    private void displayAllInformation(String contenu) throws FileNotFoundException, IOException {
+    private void displayAllInformation(String contenu, String allContenu) throws FileNotFoundException, IOException {
       Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
       alert.setTitle("Validation de la réservation");
       alert.setHeaderText(null);
@@ -162,7 +161,8 @@ public class IndexController implements Initializable {
 
       if (result.isPresent()) {
           if (result.get() == validerButton) {
-              System.out.println("Action Valider");
+            mainService.addReservationByWeb(allContenu + " - " + contenu);
+
           } else if (result.get() == refuserButton) {
             removeReservationWeb(contenu.split("-")[0]);
           }
@@ -185,11 +185,11 @@ public class IndexController implements Initializable {
         pendingReservations.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
            if(newValue != null && !newValue.isEmpty()) {
              for (ReservationWeb reservation : reservations) {
-               if(reservation.getName().equals(newValue.split(" - ")[0])) {
+               if(reservation.getName().equals(newValue.split(" - ")[1])) {
               String email = reservation.getEmail();
               String phone = reservation.getPhone();
               try {
-                displayAllInformation(email + " - " + phone);
+                displayAllInformation(email + " - " + phone, newValue);
               } catch (IOException e) {
                 e.printStackTrace();
               }

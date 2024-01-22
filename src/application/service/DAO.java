@@ -109,6 +109,7 @@ public class DAO {
 	
 	public void addClient(Client clientAdd)
 	{
+	    
 		try {
 			String nom = null;
 			String type = null;
@@ -116,13 +117,15 @@ public class DAO {
 			{
 				nom = ((Professionnel) clientAdd).getNomsociete();
 				type = "entreprise";
+				
 			}
 			else if(clientAdd instanceof Particulier)
 			{
 				nom = ((Particulier) clientAdd).getNom() + " " + ((Particulier) clientAdd).getPrenom();
 				type = "particulier";
 			}
-			PreparedStatement insertQuery = this.connection.prepareStatement("INSERT INTO client VALUES (?, ?, ?, ?)");
+					
+      PreparedStatement insertQuery = this.connection.prepareStatement("INSERT INTO client (tel, mail, nom, type) VALUES (?, ?, ?, ?)");
 			insertQuery.setString(1, clientAdd.getTel());
 			insertQuery.setString(2, clientAdd.getMail());
 			insertQuery.setString(3, nom);
@@ -427,4 +430,5 @@ public class DAO {
 		}		
 		return null;
 	}
+	
 }

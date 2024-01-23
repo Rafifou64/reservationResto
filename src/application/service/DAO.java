@@ -211,12 +211,14 @@ public class DAO {
 	public void addReservation(Reservation reservationAdd)
 	{
 		try {
-			PreparedStatement insertQuery = this.connection.prepareStatement("INSERT INTO reservation (nb_personne, type, is_validated, id_client, id_service)VALUES (?, ?, ?, ?, ?)");
+			PreparedStatement insertQuery = this.connection.prepareStatement("INSERT INTO reservation (nb_personne, type, is_validated, id_client, id_service, date_reservation)VALUES (?, ?, ?, ?, ? , ?)");
 			insertQuery.setInt(1, reservationAdd.getNbpersonne());
 			insertQuery.setString(2, reservationAdd.getType());
 			insertQuery.setBoolean(3, reservationAdd.getIs_validated());
 			insertQuery.setInt(4, reservationAdd.getClient().getId_client());
 			insertQuery.setInt(5, reservationAdd.getService().getId_service());
+	     insertQuery.setDate(6, java.sql.Date.valueOf(reservationAdd.getDate_reservation().toString()));
+
 			insertQuery.executeUpdate();
 		}
 		catch (Exception e) {
@@ -321,7 +323,7 @@ public class DAO {
 		try {
 			ArrayList<Service> lstServiceRes = new ArrayList<Service>();
 			Statement statement = this.connection.createStatement();
-			ResultSet resultSet = statement.executeQuery("select * from service");
+			ResultSet resultSet = statement.executeQuery("select * from service ORDER BY ordre_service");
 			
 			while(resultSet.next())
 			{				
@@ -362,14 +364,13 @@ public class DAO {
     return null;      
   }
   
-   public Service getServiceByHoraire(Date date_service, String horaire )
+   public Service getServiceByHoraire(String horaire )
     {
       try {  
         Service serviceRes = null;
 
-        PreparedStatement selectQuery = this.connection.prepareStatement("SELECT * FROM service WHERE date_service = ? AND horaire_service= ? ");
-        selectQuery.setDate(1, new java.sql.Date(date_service.getTime()));
-         selectQuery.setString(2, horaire);
+        PreparedStatement selectQuery = this.connection.prepareStatement("SELECT * FROM service WHERE horaire_service= ? ");
+         selectQuery.setString(1, horaire);
 
         ResultSet resultSet = selectQuery.executeQuery();
         
@@ -389,7 +390,7 @@ public class DAO {
 
 	
 
-	 /*public void addService(Service service) {
+	/* public void addService(Service service) {
 	    try {
 	        String description = "";
 	        int ordre_service = 0;

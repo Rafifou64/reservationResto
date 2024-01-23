@@ -261,7 +261,7 @@ public class DAO {
 		try {
 			ArrayList<Reservation> lstReservationRes = new ArrayList<Reservation>();
 			
-			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT r.* FROM reservation r INNER JOIN service s ON s.id_service = r.id_service WHERE r.date_reservation = ? ");
+			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT r.* FROM reservation r INNER JOIN service s ON s.id_service = r.id_service WHERE s.date_service = ? ");
 			selectQuery.setDate(1, (java.sql.Date) dateReservation);
 			ResultSet resultSet = selectQuery.executeQuery();
 			
@@ -290,7 +290,7 @@ public class DAO {
 		try {
 			ArrayList<Reservation> lstReservationRes = new ArrayList<Reservation>();
 			
-			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT r.* FROM reservation r INNER JOIN service s ON s.id_service = r.id_service WHERE r.date_reservation = ? AND s.horaire_service = ? ");
+			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT r.* FROM reservation r INNER JOIN service s ON s.id_service = r.id_service WHERE s.date_service = ? AND s.horaire_service = ? ");
 			selectQuery.setDate(1, (java.sql.Date) dateReservation);
 			selectQuery.setString(2, horaire_service);
 			ResultSet resultSet = selectQuery.executeQuery();
@@ -321,7 +321,7 @@ public class DAO {
 		try {
 			ArrayList<Service> lstServiceRes = new ArrayList<Service>();
 			Statement statement = this.connection.createStatement();
-			ResultSet resultSet = statement.executeQuery("select * from service");
+			ResultSet resultSet = statement.executeQuery("select * from service ORDER BY ordre_service");
 			
 			while(resultSet.next())
 			{				
@@ -362,14 +362,13 @@ public class DAO {
     return null;      
   }
   
-   public Service getServiceByHoraire(Date date_service, String horaire )
+   public Service getServiceByHoraire(String horaire )
     {
       try {  
         Service serviceRes = null;
 
-        PreparedStatement selectQuery = this.connection.prepareStatement("SELECT * FROM service WHERE date_service = ? AND horaire_service= ? ");
-        selectQuery.setDate(1, new java.sql.Date(date_service.getTime()));
-         selectQuery.setString(2, horaire);
+        PreparedStatement selectQuery = this.connection.prepareStatement("SELECT * FROM service WHERE horaire_service= ? ");
+         selectQuery.setString(1, horaire);
 
         ResultSet resultSet = selectQuery.executeQuery();
         
@@ -389,7 +388,7 @@ public class DAO {
 
 	
 
-	 /*public void addService(Service service) {
+	/* public void addService(Service service) {
 	    try {
 	        String description = "";
 	        int ordre_service = 0;

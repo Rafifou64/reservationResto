@@ -1,6 +1,7 @@
 package application.entite;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Reservation {	
 
@@ -8,16 +9,18 @@ public class Reservation {
 	private int nbpersonne;
 	private String type;
 	private boolean is_validated;
+	private Date date_reservation;
 	private Client client;
 	private Service service;
 	private ArrayList<Tables> lstTables;
 	
-	public Reservation(int id_reservation, int nbpersonne, String type, boolean is_validated, Client client, Service service, ArrayList<Tables> lstTables)
+	public Reservation(int id_reservation, int nbpersonne, String type, boolean is_validated, Date date_reservation, Client client, Service service, ArrayList<Tables> lstTables)
 	{
 		this.id_reservation = id_reservation;
 		this.nbpersonne = nbpersonne;
 		this.type = type;
 		this.is_validated = is_validated;
+		this.date_reservation = date_reservation;
 		this.client = client;
 		this.service = service;
 		this.lstTables = lstTables;
@@ -53,6 +56,14 @@ public class Reservation {
 
 	public void setIs_validated(boolean is_validated) {
 		this.is_validated = is_validated;
+	}
+	
+	public Date getDate_reservation() {
+		return date_reservation;
+	}
+	
+	public void setDate_reservation(Date date_reservation) {
+		this.date_reservation = date_reservation;
 	}
 
 	public Client getClient() {

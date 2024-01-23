@@ -194,7 +194,7 @@ public class DAO {
 				Service service = this.getServiceById(resultSet.getInt("id_service"));
 				ArrayList<Tables> tables = this.getAllTableByIdReservation(resultSet.getInt("id_reservation"));
 				
-				Reservation reservationRes = new Reservation(resultSet.getInt("id_reservation"), resultSet.getInt("nb_personne"), resultSet.getString("type"), resultSet.getBoolean("is_validated"), client, service, tables);
+				Reservation reservationRes = new Reservation(resultSet.getInt("id_reservation"), resultSet.getInt("nb_personne"), resultSet.getString("type"), resultSet.getBoolean("is_validated"), resultSet.getDate("date_reservation"), client, service, tables);
 				
 				lstReservationRes.add(reservationRes);
 			}
@@ -261,7 +261,7 @@ public class DAO {
 		try {
 			ArrayList<Reservation> lstReservationRes = new ArrayList<Reservation>();
 			
-			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT r.* FROM reservation r INNER JOIN service s ON s.id_service = r.id_service WHERE s.date_service = ? ");
+			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT r.* FROM reservation r INNER JOIN service s ON s.id_service = r.id_service WHERE r.date_reservation = ? ");
 			selectQuery.setDate(1, (java.sql.Date) dateReservation);
 			ResultSet resultSet = selectQuery.executeQuery();
 			
@@ -271,7 +271,7 @@ public class DAO {
 				Service service = this.getServiceById(resultSet.getInt("id_service"));
 				ArrayList<Tables> tables = this.getAllTableByIdReservation(resultSet.getInt("id_reservation"));
 				
-				Reservation reservationRes = new Reservation(resultSet.getInt("id_reservation"), resultSet.getInt("nb_personne"), resultSet.getString("type"), resultSet.getBoolean("is_validated"), client, service, tables);
+				Reservation reservationRes = new Reservation(resultSet.getInt("id_reservation"), resultSet.getInt("nb_personne"), resultSet.getString("type"), resultSet.getBoolean("is_validated"), resultSet.getDate("date_reservation"), client, service, tables);
 				
 				lstReservationRes.add(reservationRes);
 			}
@@ -290,7 +290,7 @@ public class DAO {
 		try {
 			ArrayList<Reservation> lstReservationRes = new ArrayList<Reservation>();
 			
-			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT r.* FROM reservation r INNER JOIN service s ON s.id_service = r.id_service WHERE s.date_service = ? AND s.horaire_service = ? ");
+			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT r.* FROM reservation r INNER JOIN service s ON s.id_service = r.id_service WHERE r.date_reservation = ? AND s.horaire_service = ? ");
 			selectQuery.setDate(1, (java.sql.Date) dateReservation);
 			selectQuery.setString(2, horaire_service);
 			ResultSet resultSet = selectQuery.executeQuery();
@@ -301,7 +301,7 @@ public class DAO {
 				Service service = this.getServiceById(resultSet.getInt("id_service"));
 				ArrayList<Tables> tables = this.getAllTableByIdReservation(resultSet.getInt("id_reservation"));
 				
-				Reservation reservationRes = new Reservation(resultSet.getInt("id_reservation"), resultSet.getInt("nb_personne"), resultSet.getString("type"), resultSet.getBoolean("is_validated"), client, service, tables);
+				Reservation reservationRes = new Reservation(resultSet.getInt("id_reservation"), resultSet.getInt("nb_personne"), resultSet.getString("type"), resultSet.getBoolean("is_validated"), resultSet.getDate("date_reservation"), client, service, tables);
 				
 				lstReservationRes.add(reservationRes);
 			}
@@ -325,7 +325,7 @@ public class DAO {
 			
 			while(resultSet.next())
 			{				
-				Service serviceRes = new Service(resultSet.getInt("id_service"), resultSet.getDate("date_service"), resultSet.getInt("ordre_service"), resultSet.getString("description"), resultSet.getString("horaire_service"));
+				Service serviceRes = new Service(resultSet.getInt("id_service"), resultSet.getInt("ordre_service"), resultSet.getString("description"), resultSet.getString("horaire_service"));
 
 				lstServiceRes.add(serviceRes);
 			}
@@ -350,7 +350,7 @@ public class DAO {
       
       while(resultSet.next())
       {
-        serviceRes = new Service(resultSet.getInt("id_service"), resultSet.getDate("date_service"), resultSet.getInt("ordre_service"), resultSet.getString("description"), resultSet.getString("horaire_service"));
+        serviceRes = new Service(resultSet.getInt("id_service"), resultSet.getInt("ordre_service"), resultSet.getString("description"), resultSet.getString("horaire_service"));
       }
       
       return serviceRes;
@@ -375,7 +375,7 @@ public class DAO {
         
         while(resultSet.next())
         {
-          serviceRes = new Service(resultSet.getInt("id_service"), resultSet.getDate("date_service"), resultSet.getInt("ordre_service"), resultSet.getString("description"), resultSet.getString("horaire_service"));
+          serviceRes = new Service(resultSet.getInt("id_service"), resultSet.getInt("ordre_service"), resultSet.getString("description"), resultSet.getString("horaire_service"));
         }
         
         return serviceRes;
@@ -389,7 +389,7 @@ public class DAO {
 
 	
 
-	 public void addService(Service service) {
+	 /*public void addService(Service service) {
 	    try {
 	        String description = "";
 	        int ordre_service = 0;
@@ -434,7 +434,7 @@ public class DAO {
 	        System.err.println("Erreur ajout de service !!");
 	        System.err.println(e.getMessage());
 	    }
-	}
+	}*/
 
 	
 	public void deleteService(int idService)

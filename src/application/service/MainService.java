@@ -80,7 +80,7 @@ public class MainService {
 			libelleClient = ((Professionnel) client).getNomsociete().toUpperCase();
 		}
 		
-		String dateFormatted = this.formatDate(new java.sql.Date(service.getDate_service().getTime()).toLocalDate());
+		String dateFormatted = this.formatDate(new java.sql.Date(reservation.getDate_reservation().getTime()).toLocalDate());
 		
 		return dateFormatted + "   " + service.getHoraire_service() + "     " + libelleClient + "     " + Integer.toString(reservation.getNbpersonne()) + " personnes    " + client.getTel();
 	}
@@ -120,13 +120,13 @@ public class MainService {
         return; 
     }
 
-    Service service = new Service(1, dateFormatted, 1, "description", horaire);
-    this.dao.addService(service);
+    //Service service = new Service(1, 1, "description", horaire);
+    //this.dao.addService(service);
     
     Client clientByEmail = this.dao.getClient("mail", email);
     Service serviceByHoraire = this.dao.getServiceByHoraire( dateFormatted, horaire); 
    
-    Reservation reservation = new Reservation(1, nb_person, type, true, clientByEmail, serviceByHoraire, new ArrayList<Tables>());
+    Reservation reservation = new Reservation(1, nb_person, type, true, dateFormatted, clientByEmail, serviceByHoraire, new ArrayList<Tables>());
     this.dao.addReservation(reservation);
     } catch (Exception e) {
       System.out.println(e.getMessage());

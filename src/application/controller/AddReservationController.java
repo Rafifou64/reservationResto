@@ -85,13 +85,6 @@ public class AddReservationController implements Initializable {
 
     Date selectedDate = java.sql.Date.valueOf(localDate);
 
-    System.out.println("Nom: " + name);
-    System.out.println("Prénom: " + firstname);
-    System.out.println("Téléphone: " + phone);
-    System.out.println("Email: " + email);
-    System.out.println("Nombre de personnes: " + nbPersons);
-    System.out.println("Heure sélectionnée: " + selectedHour);
-    System.out.println("Date sélectionnée (java.util.Date): " + selectedDate);
 
     this.mainService.addReservationByForm(name, firstname, phone, email, nbPersons, selectedHour, selectedDate);
 	}

@@ -81,25 +81,33 @@ public class MainService {
 		}
 		
 		String dateFormatted = this.formatDate(new java.sql.Date(reservation.getDate_reservation().getTime()).toLocalDate());
+	
 		
 		return dateFormatted + "   " + service.getHoraire_service() + "     " + libelleClient + "     " + Integer.toString(reservation.getNbpersonne()) + " personnes    " + client.getTel();
 	}
 	
 	public void addReservationByForm (String name, String firstname, String phone, String email, String nbPersons, String selectedHour, Date selectedDate) {
 	  try {
+      String type = null;
+      int persons = Integer.parseInt(nbPersons);
+
 	    if(firstname != null) {
 	      Particulier particulier = new Particulier(0, phone, email, name, firstname); 
+	      type = "particulier";
         this.dao.addClient(particulier);
 	    } else {
         Professionnel professionnel = new Professionnel(1, phone, email, name); 
         this.dao.addClient(professionnel);
+        type = "entreprise";
 	    }
 	    
 	    Client clientByEmail = this.dao.getClient("mail", email);
       Service serviceByHoraire = this.dao.getServiceByHoraire(selectedHour); 
-	  }catch (Exception e) {
-	    
-	  }
+      Reservation reservation = new Reservation(1, persons, type, true, selectedDate, clientByEmail, serviceByHoraire, new ArrayList<Tables>());
+      this.dao.addReservation(reservation);
+      } catch (Exception e) {
+        System.out.println(e.getMessage());
+    }
 	}
 	
 	public void addReservationByWeb(String contentList) {

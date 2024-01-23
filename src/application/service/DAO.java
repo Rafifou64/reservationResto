@@ -211,12 +211,14 @@ public class DAO {
 	public void addReservation(Reservation reservationAdd)
 	{
 		try {
-			PreparedStatement insertQuery = this.connection.prepareStatement("INSERT INTO reservation (nb_personne, type, is_validated, id_client, id_service)VALUES (?, ?, ?, ?, ?)");
+			PreparedStatement insertQuery = this.connection.prepareStatement("INSERT INTO reservation (nb_personne, type, is_validated, id_client, id_service, date_reservation)VALUES (?, ?, ?, ?, ? , ?)");
 			insertQuery.setInt(1, reservationAdd.getNbpersonne());
 			insertQuery.setString(2, reservationAdd.getType());
 			insertQuery.setBoolean(3, reservationAdd.getIs_validated());
 			insertQuery.setInt(4, reservationAdd.getClient().getId_client());
 			insertQuery.setInt(5, reservationAdd.getService().getId_service());
+	     insertQuery.setDate(6, java.sql.Date.valueOf(reservationAdd.getDate_reservation().toString()));
+
 			insertQuery.executeUpdate();
 		}
 		catch (Exception e) {
@@ -261,7 +263,7 @@ public class DAO {
 		try {
 			ArrayList<Reservation> lstReservationRes = new ArrayList<Reservation>();
 			
-			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT r.* FROM reservation r INNER JOIN service s ON s.id_service = r.id_service WHERE s.date_service = ? ");
+			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT r.* FROM reservation r INNER JOIN service s ON s.id_service = r.id_service WHERE r.date_reservation = ? ");
 			selectQuery.setDate(1, (java.sql.Date) dateReservation);
 			ResultSet resultSet = selectQuery.executeQuery();
 			
@@ -290,7 +292,7 @@ public class DAO {
 		try {
 			ArrayList<Reservation> lstReservationRes = new ArrayList<Reservation>();
 			
-			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT r.* FROM reservation r INNER JOIN service s ON s.id_service = r.id_service WHERE s.date_service = ? AND s.horaire_service = ? ");
+			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT r.* FROM reservation r INNER JOIN service s ON s.id_service = r.id_service WHERE r.date_reservation = ? AND s.horaire_service = ? ");
 			selectQuery.setDate(1, (java.sql.Date) dateReservation);
 			selectQuery.setString(2, horaire_service);
 			ResultSet resultSet = selectQuery.executeQuery();

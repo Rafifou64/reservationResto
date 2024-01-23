@@ -124,6 +124,161 @@
                         <Image url="@../../images/table_java.png" />
                      </image>
                   </ImageView>
+                  <Label fx:id="labMessage" alignment="CENTER" layoutX="79.0" layoutY="217.0" prefHeight="98.0" prefWidth="388.0" textAlignment="CENTER" textFill="#8d3c3c" wrapText="true">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <ImageView fx:id="plate_1_1_1" fitHeight="50.0" fitWidth="46.0" layoutX="46.0" layoutY="129.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_1_2_1" fitHeight="50.0" fitWidth="46.0" layoutX="46.0" layoutY="214.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_1_3_1" fitHeight="50.0" fitWidth="46.0" layoutX="46.0" layoutY="299.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_3_4_1" fitHeight="50.0" fitWidth="46.0" layoutX="411.0" layoutY="384.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_2_1_1" fitHeight="50.0" fitWidth="46.0" layoutX="227.0" layoutY="129.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_3_3_1" fitHeight="50.0" fitWidth="46.0" layoutX="411.0" layoutY="299.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_3_2_1" fitHeight="50.0" fitWidth="46.0" layoutX="411.0" layoutY="214.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_1_4_1" fitHeight="50.0" fitWidth="46.0" layoutX="46.0" layoutY="384.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_3_1_1" fitHeight="50.0" fitWidth="46.0" layoutX="411.0" layoutY="129.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_2_5_1" fitHeight="50.0" fitWidth="46.0" layoutX="227.0" layoutY="468.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_2_4_1" fitHeight="50.0" fitWidth="46.0" layoutX="224.0" layoutY="384.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_2_3_1" fitHeight="50.0" fitWidth="46.0" layoutX="224.0" layoutY="299.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_2_2_1" fitHeight="50.0" fitWidth="46.0" layoutX="224.0" layoutY="210.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_1_5_1" fitHeight="50.0" fitWidth="46.0" layoutX="46.0" layoutY="468.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_3_5_1" fitHeight="50.0" fitWidth="46.0" layoutX="411.0" layoutY="468.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_1_1_2" fitHeight="50.0" fitWidth="46.0" layoutX="95.0" layoutY="129.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_1_2_2" fitHeight="50.0" fitWidth="46.0" layoutX="95.0" layoutY="210.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_1_3_2" fitHeight="50.0" fitWidth="46.0" layoutX="95.0" layoutY="299.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_1_4_2" fitHeight="50.0" fitWidth="46.0" layoutX="95.0" layoutY="384.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_1_5_2" fitHeight="50.0" fitWidth="46.0" layoutX="95.0" layoutY="468.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_2_5_2" fitHeight="50.0" fitWidth="46.0" layoutX="275.0" layoutY="468.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_2_4_2" fitHeight="50.0" fitWidth="46.0" layoutX="275.0" layoutY="384.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_2_3_2" fitHeight="50.0" fitWidth="46.0" layoutX="275.0" layoutY="299.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_2_2_2" fitHeight="50.0" fitWidth="46.0" layoutX="275.0" layoutY="210.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_2_1_2" fitHeight="50.0" fitWidth="46.0" layoutX="275.0" layoutY="126.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_3_5_2" fitHeight="50.0" fitWidth="46.0" layoutX="458.0" layoutY="468.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_3_4_2" fitHeight="50.0" fitWidth="46.0" layoutX="458.0" layoutY="384.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_3_3_2" fitHeight="50.0" fitWidth="46.0" layoutX="458.0" layoutY="299.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_3_2_2" fitHeight="50.0" fitWidth="46.0" layoutX="458.0" layoutY="210.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="plate_3_1_2" fitHeight="50.0" fitWidth="46.0" layoutX="458.0" layoutY="126.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" visible="false">
+                     <image>
+                        <Image url="@../../images/plate.png" />
+                     </image>
+                  </ImageView>
                </children></AnchorPane>
         </items>
       </SplitPane>

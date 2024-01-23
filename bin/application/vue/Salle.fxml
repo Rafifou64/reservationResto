@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -43,12 +44,12 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="516.0" prefWidth="561.0">
                <children>
-                  <Label fx:id="labDate" alignment="CENTER" layoutX="14.0" layoutY="29.0" prefHeight="50.0" prefWidth="358.0" style="-fx-background-color: #8d3c3c;" textFill="WHITE">
+                  <Label fx:id="labDate" alignment="CENTER" layoutX="14.0" layoutY="23.0" prefHeight="50.0" prefWidth="232.0" style="-fx-background-color: #8d3c3c;" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Label>
-                  <DatePicker fx:id="datePicker" layoutX="390.0" layoutY="35.0" onAction="#changeDateReservation" prefHeight="37.0" prefWidth="132.0" />
+                  <DatePicker fx:id="datePicker" layoutX="256.0" layoutY="29.0" onAction="#changeDateReservation" prefHeight="38.0" prefWidth="132.0" />
                   <ImageView fx:id="table_1_1" fitHeight="150.0" fitWidth="200.0" layoutX="-7.0" layoutY="103.0" pickOnBounds="true" preserveRatio="true" visible="false">
                      <image>
                         <Image url="@../../images/table_java.png" />
@@ -279,6 +280,7 @@
                         <Image url="@../../images/plate.png" />
                      </image>
                   </ImageView>
+                  <ListView fx:id="listViewService" layoutX="399.0" layoutY="19.0" onMouseClicked="#changeDateReservation" prefHeight="58.0" prefWidth="132.0" />
                </children></AnchorPane>
         </items>
       </SplitPane>

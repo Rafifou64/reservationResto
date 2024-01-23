@@ -285,14 +285,14 @@ public class DAO {
 		return null;	
 	}
 	
-	public ArrayList<Reservation> getAllReservationByDateAndHoraire(Date dateReservation, String horaire_service)
+	public ArrayList<Reservation> getAllReservationByDateAndHoraire(Date dateReservation, int ordre_service)
 	{
 		try {
 			ArrayList<Reservation> lstReservationRes = new ArrayList<Reservation>();
 			
-			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT r.* FROM reservation r INNER JOIN service s ON s.id_service = r.id_service WHERE r.date_reservation = ? AND s.horaire_service = ? ");
+			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT r.* FROM reservation r INNER JOIN service s ON s.id_service = r.id_service WHERE r.date_reservation = ? AND s.ordre_service = ? ");
 			selectQuery.setDate(1, (java.sql.Date) dateReservation);
-			selectQuery.setString(2, horaire_service);
+			selectQuery.setInt(2, ordre_service);
 			ResultSet resultSet = selectQuery.executeQuery();
 			
 			while(resultSet.next())

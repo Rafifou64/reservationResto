@@ -132,4 +132,15 @@ public class MainService {
       System.out.println(e.getMessage());
     }
 	}
+	
+	public ArrayList<Service> getAllService()
+	{
+		return this.dao.getAllService();
+	}
+	
+	public ArrayList<Reservation> getAllReservationByDateReservationAndOrdreService(LocalDate date_reservation, int ordre_service)
+	{
+		Date formattedDate = java.sql.Date.valueOf(date_reservation);
+		return this.dao.getAllReservationByDateAndHoraire(formattedDate, ordre_service);
+	}
 }

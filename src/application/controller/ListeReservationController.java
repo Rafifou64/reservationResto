@@ -103,7 +103,7 @@ public class ListeReservationController implements Initializable {
 		 int indexReservation = this.listViewReservation.getSelectionModel().getSelectedIndex();
 		 Reservation reservationDelete = this.lstReservation.get(indexReservation);
 		 
-		 Alert alert = new Alert(AlertType.WARNING, "Delete "+ displayReservationObs.get(0) +" ?", ButtonType.YES, ButtonType.CANCEL);
+		 Alert alert = new Alert(AlertType.WARNING, "Supprimer "+ displayReservationObs.get(0) +" ?", ButtonType.YES, ButtonType.CANCEL);
 		 alert.showAndWait();
 
 		 if (alert.getResult() == ButtonType.YES) {

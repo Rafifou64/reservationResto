@@ -162,7 +162,7 @@ public class MainService {
       int nb_person = Integer.parseInt(elements[4].split(" ")[0]);
       String email = elements[5];
       String tel = elements[6];
-      
+            
       if(type.equals("particulier")) {
         Particulier particulier = new Particulier(1, tel, email, lastname, firstname); 
         this.dao.addClient(particulier);

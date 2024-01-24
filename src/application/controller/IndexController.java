@@ -165,7 +165,7 @@ public class IndexController implements Initializable {
       if (result.isPresent()) {
           if (result.get() == validerButton) {
             mainService.addReservationByWeb(allContenu + " - " + contenu);
-
+            removeReservationWeb(contenu.split("-")[0]);
           } else if (result.get() == refuserButton) {
             removeReservationWeb(contenu.split("-")[0]);
           }

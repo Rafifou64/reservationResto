@@ -209,15 +209,19 @@ public class DAO {
 	}
 	
 	public void addReservation(Reservation reservationAdd)
-	{
+	{		
+		System.out.println(reservationAdd.getDate_reservation().toString());
+		System.out.println();
+
+
 		try {
-			PreparedStatement insertQuery = this.connection.prepareStatement("INSERT INTO reservation (nb_personne, type, is_validated, id_client, id_service, date_reservation)VALUES (?, ?, ?, ?, ? , ?)");
+			PreparedStatement insertQuery = this.connection.prepareStatement("INSERT INTO reservation (nb_personne, type, is_validated, id_client, id_service, date_reservation)VALUES (?,?,?,?,?,?)");
 			insertQuery.setInt(1, reservationAdd.getNbpersonne());
 			insertQuery.setString(2, reservationAdd.getType());
 			insertQuery.setBoolean(3, reservationAdd.getIs_validated());
 			insertQuery.setInt(4, reservationAdd.getClient().getId_client());
 			insertQuery.setInt(5, reservationAdd.getService().getId_service());
-			insertQuery.setDate(6, java.sql.Date.valueOf(reservationAdd.getDate_reservation().toString()));
+			insertQuery.setDate(6, new java.sql.Date(reservationAdd.getDate_reservation().getTime()));
 
 			insertQuery.executeUpdate();
 		}

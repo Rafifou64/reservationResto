@@ -48,7 +48,7 @@
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Label>
-                  <Label id="nb_reservation" fx:id="nb_reservation_day" alignment="CENTER_RIGHT" layoutX="181.0" layoutY="110.0" prefHeight="98.0" prefWidth="157.0" style="-fx-border-color: black; -fx-border-radius: 15px;" stylesheets="@../../css/style.css" textAlignment="CENTER" wrapText="true">
+                  <Label id="nb_reservation" fx:id="nb_reservation_day" alignment="CENTER_RIGHT" layoutX="174.0" layoutY="109.0" prefHeight="98.0" prefWidth="172.0" style="-fx-border-color: black; -fx-border-radius: 15px;" stylesheets="@../../css/style.css" textAlignment="CENTER" wrapText="true">
                      <font>
                         <Font name="Book Antiqua" size="30.0" />
                      </font>

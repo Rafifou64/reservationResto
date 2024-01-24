@@ -9,18 +9,14 @@ import java.util.ResourceBundle;
 import application.entite.Reservation;
 import application.entite.Service;
 import application.service.MainService;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
 
 public class SalleController implements Initializable {
 	
@@ -285,7 +281,7 @@ public class SalleController implements Initializable {
 		
 		for (int i = 0; i < this.lstService.size(); i++)
 		{
-			this.listViewService.getItems().add(this.lstService.get(i).getDescription());
+			this.listViewService.getItems().add(this.lstService.get(i).getHoraire_service());
 		}
 	}
 	
@@ -296,19 +292,20 @@ public class SalleController implements Initializable {
 	
 	public void getReservation()
 	{
-		this.lstReservation = this.mainService.getAllReservationByDateReservationAndOrdreService(dateReservation, ordreService);
+		this.lstReservation = this.mainService.getAllReservationByDateReservationAndOrdreService(this.dateReservation, this.ordreService);
 	}
 	
 	public void changeDateReservation()
 	{
-		String descriptionService = (String) this.listViewService.getSelectionModel().getSelectedItem();
+		ObservableList horaireServiceObs = this.listViewService.getSelectionModel().getSelectedItems();
+		String horaireService = horaireServiceObs.get(0).toString();
 		Service selectedService = null;
 		for (int i = 0; i < this.lstService.size(); i++)
 		{
-			if(this.lstService.get(i).getDescription().equals(descriptionService))
+			if(this.lstService.get(i).getHoraire_service().equals(horaireService))
 			{
 				selectedService = this.lstService.get(i);
-				this.ordreService = selectedService.getOrdre_service();				
+				this.ordreService = selectedService.getOrdre_service();
 			}
 		}
 		this.dateReservation = this.datePicker.getValue();
@@ -333,8 +330,8 @@ public class SalleController implements Initializable {
 		
 		int cptTable = 0;
 		int nbTableReservation = 0;
-		for (int i = 0; i < lstReservation.size(); i++) {
-			Reservation reservation = lstReservation.get(i);
+		for (int i = 0; i < this.lstReservation.size(); i++) {
+			Reservation reservation = this.lstReservation.get(i);
 			int nbPersonne = reservation.getNbpersonne();
 			nbTableReservation = nbTableReservation + reservation.getLstTables().size();
 			for (int j = 0; j < reservation.getLstTables().size(); j++) {

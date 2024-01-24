@@ -50,7 +50,7 @@
                      </font>
                   </Label>
                   <DatePicker fx:id="datePicker" layoutX="385.0" layoutY="35.0" onAction="#changeDateReservation" prefHeight="38.0" prefWidth="146.0" />
-                  <ListView fx:id="listViewReservation" layoutX="12.0" layoutY="89.0" prefHeight="434.0" prefWidth="521.0" />
+                  <ListView fx:id="listViewReservation" layoutX="12.0" layoutY="89.0" onMouseClicked="#confirmDeleteReservation" prefHeight="434.0" prefWidth="521.0" />
                </children></AnchorPane>
         </items>
       </SplitPane>

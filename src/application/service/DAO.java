@@ -217,7 +217,22 @@ public class DAO {
 			insertQuery.setBoolean(3, reservationAdd.getIs_validated());
 			insertQuery.setInt(4, reservationAdd.getClient().getId_client());
 			insertQuery.setInt(5, reservationAdd.getService().getId_service());
-	     insertQuery.setDate(6, java.sql.Date.valueOf(reservationAdd.getDate_reservation().toString()));
+			insertQuery.setDate(6, java.sql.Date.valueOf(reservationAdd.getDate_reservation().toString()));
+
+			insertQuery.executeUpdate();
+		}
+		catch (Exception e) {
+			System.err.println("Erreur de connexion !!");
+			System.err.println(e.getMessage());
+		}	
+	}
+	
+	public void addReservationTables(int idReservation, int idTable)
+	{
+		try {
+			PreparedStatement insertQuery = this.connection.prepareStatement("INSERT INTO reservation_tables (id_tables, id_reservation)VALUES (?, ?)");
+			insertQuery.setInt(1, idTable);
+			insertQuery.setInt(2, idReservation);
 
 			insertQuery.executeUpdate();
 		}
@@ -248,7 +263,20 @@ public class DAO {
 	public void deleteReservation(int idReservation)
 	{
 		try {
-			PreparedStatement deleteQuery = this.connection.prepareStatement("DELETE FROM reservation WHERE id = ? ");
+			PreparedStatement deleteQuery = this.connection.prepareStatement("DELETE FROM reservation WHERE id_reservation = ? ");
+			deleteQuery.setInt(1, idReservation);
+			deleteQuery.executeUpdate();
+		}
+		catch (Exception e) {
+			System.err.println("Erreur de connexion !!");
+			System.err.println(e.getMessage());
+		}
+	}
+	
+	public void deleteReservationTablesByIdReservation(int idReservation)
+	{
+		try {
+			PreparedStatement deleteQuery = this.connection.prepareStatement("DELETE FROM reservation_tables WHERE id_reservation = ? ");
 			deleteQuery.setInt(1, idReservation);
 			deleteQuery.executeUpdate();
 		}
@@ -317,6 +345,68 @@ public class DAO {
 		return null;	
 	}
 	
+	public Reservation getReservationByDateAndHoraireAndIdClient(Date dateReservation, String horaire_service, int idClient)
+	{
+		try {
+			Reservation reservationRes = null;
+			
+			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT r.* FROM reservation r INNER JOIN service s ON s.id_service = r.id_service WHERE r.date_reservation = ? AND s.ordre_service = ? AND r.id_client = ? ");
+			selectQuery.setDate(1, java.sql.Date.valueOf(dateReservation.toString()));
+			selectQuery.setString(2, horaire_service);
+			selectQuery.setInt(3, idClient);
+			ResultSet resultSet = selectQuery.executeQuery();
+			
+			while(resultSet.next())
+			{
+				Client client = this.getClient("id_client", resultSet.getInt("id_client"));
+				Service service = this.getServiceById(resultSet.getInt("id_service"));
+				ArrayList<Tables> tables = this.getAllTableByIdReservation(resultSet.getInt("id_reservation"));
+				
+				Reservation reservation = new Reservation(resultSet.getInt("id_reservation"), resultSet.getInt("nb_personne"), resultSet.getString("type"), resultSet.getBoolean("is_validated"), resultSet.getDate("date_reservation"), client, service, tables);
+				System.out.println(reservation);
+				reservationRes = reservation;
+			}
+			System.out.println(reservationRes);
+			
+			return reservationRes;
+		}
+		catch (Exception e) {
+			System.err.println("Erreur de connexion !!");
+			System.err.println(e.getMessage());
+		}
+		return null;	
+	}
+	
+	public Reservation getReservationByIdClient(int idClient)
+	{
+		try {
+			Reservation reservationRes = null;
+			
+			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT r.* FROM reservation r WHERE r.id_client = ? ");
+			selectQuery.setInt(1, idClient);
+			ResultSet resultSet = selectQuery.executeQuery();
+			
+			while(resultSet.next())
+			{
+				Client client = this.getClient("id_client", idClient);
+				Service service = this.getServiceById(resultSet.getInt("id_service"));
+				ArrayList<Tables> tables = this.getAllTableByIdReservation(resultSet.getInt("id_reservation"));
+				
+				Reservation reservation = new Reservation(resultSet.getInt("id_reservation"), resultSet.getInt("nb_personne"), resultSet.getString("type"), resultSet.getBoolean("is_validated"), resultSet.getDate("date_reservation"), client, service, tables);
+				System.out.println(reservation);
+				reservationRes = reservation;
+			}
+			System.out.println(reservationRes);
+			
+			return reservationRes;
+		}
+		catch (Exception e) {
+			System.err.println("Erreur de connexion !!");
+			System.err.println(e.getMessage());
+		}
+		return null;	
+	}
+	
 	//CRUD service
 	public ArrayList<Service> getAllService()
 	{
@@ -342,30 +432,30 @@ public class DAO {
 	}
 	
 	public Service getServiceById(int idService)
-  {
-    try {
-      Service serviceRes = null;
+	{
+		try {
+			Service serviceRes = null;
 
-      PreparedStatement selectQuery = this.connection.prepareStatement("SELECT * FROM service WHERE id_service = ? ");
-      selectQuery.setInt(1, idService);
-      ResultSet resultSet = selectQuery.executeQuery();
+			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT * FROM service WHERE id_service = ? ");
+			selectQuery.setInt(1, idService);
+			ResultSet resultSet = selectQuery.executeQuery();
       
-      while(resultSet.next())
-      {
-        serviceRes = new Service(resultSet.getInt("id_service"), resultSet.getInt("ordre_service"), resultSet.getString("description"), resultSet.getString("horaire_service"));
-      }
+			while(resultSet.next())
+			{
+				serviceRes = new Service(resultSet.getInt("id_service"), resultSet.getInt("ordre_service"), resultSet.getString("description"), resultSet.getString("horaire_service"));
+			}
       
-      return serviceRes;
-    }
-    catch (Exception e) {
-      System.err.println("Erreur de connexion !!");
-      System.err.println(e.getMessage());
-    }
-    return null;      
+			return serviceRes;
+		}
+		catch (Exception e) {
+			System.err.println("Erreur de connexion !!");
+			System.err.println(e.getMessage());
+		}
+		return null;      
   }
   
    public Service getServiceByHoraire(String horaire )
-    {
+   {
       try {  
         Service serviceRes = null;
 
@@ -387,56 +477,6 @@ public class DAO {
       }   
       return null;      
     }
-
-	
-
-	/* public void addService(Service service) {
-	    try {
-	        String description = "";
-	        int ordre_service = 0;
-	        String horaire = service.getHoraire_service();
-
-	        Map<String, String[]> horairesDescriptions = new HashMap<>();
-	        horairesDescriptions.put("11h30-12h30", new String[]{"1er service du midi", "1"});
-	        horairesDescriptions.put("12h30-13h30", new String[]{"2eme service du midi", "2"});
-	        horairesDescriptions.put("19h00-21h00", new String[]{"1er service du soir", "3"});
-	        horairesDescriptions.put("21h00-23h00", new String[]{"2eme service du soir", "4"});
-
-	        for (Map.Entry<String, String[]> entry : horairesDescriptions.entrySet()) {
-	            String plageHoraire = entry.getKey();
-	            String[] infoService = entry.getValue();
-	            String debutPlage = plageHoraire.split("-")[0];
-	            String finPlage = plageHoraire.split("-")[1];
-
-	            if (horaire.compareTo(debutPlage) >= 0 && horaire.compareTo(finPlage) <= 0) {
-	                ordre_service = Integer.parseInt(infoService[1]);
-	                description = infoService[0];
-	                break;
-	            }
-	        }
-
-	        PreparedStatement selectQuery = this.connection.prepareStatement("SELECT COUNT(*) FROM service WHERE date_service = ? AND ordre_service = ?");
-	        selectQuery.setDate(1, new java.sql.Date(service.getDate_service().getTime()));
-	        selectQuery.setInt(2, ordre_service);
-	        ResultSet resultSet = selectQuery.executeQuery();
-
-	        if (resultSet.next() && resultSet.getInt(1) == 0) {
-	            PreparedStatement insertQuery = this.connection.prepareStatement("INSERT INTO service(date_service, ordre_service, description, horaire_service) VALUES (?, ?, ?, ?)");
-	            insertQuery.setDate(1, new java.sql.Date(service.getDate_service().getTime()));
-	            insertQuery.setInt(2, ordre_service);
-	            insertQuery.setString(3, description);
-	            insertQuery.setString(4, service.getHoraire_service());
-	            insertQuery.executeUpdate();
-	        } else {
-	            System.out.println("La combinaison date_service et ordre_service existe déjà dans la table.");
-	        }
-
-	    } catch (Exception e) {
-	        System.err.println("Erreur ajout de service !!");
-	        System.err.println(e.getMessage());
-	    }
-	}*/
-
 	
 	public void deleteService(int idService)
 	{
@@ -459,6 +499,34 @@ public class DAO {
 			
 			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT t.* FROM tables t INNER JOIN reservation_tables rt on t.id_tables = rt.id_tables WHERE rt.id_reservation = ? ");
 			selectQuery.setInt(1, idReservation);
+			ResultSet resultSet = selectQuery.executeQuery();
+			
+			while(resultSet.next())
+			{
+				Tables tablesRes = null;
+
+				tablesRes = new Tables(resultSet.getInt("id_tables"), resultSet.getInt("nb_chaise"));					
+				
+				lstTablesRes.add(tablesRes);
+			}
+			
+			return lstTablesRes;
+		}
+		catch (Exception e) {
+			System.err.println("Erreur de connexion !!");
+			System.err.println(e.getMessage());
+		}		
+		return null;
+	}
+	
+	public ArrayList<Tables> getAllTablesAvailableByDateReservationAndHoraireService(java.sql.Date dateReservation, String horaireService)
+	{
+		try {
+			ArrayList<Tables> lstTablesRes = new ArrayList<Tables>();
+			
+			PreparedStatement selectQuery = this.connection.prepareStatement("SELECT t.* FROM tables t WHERE NOT EXISTS ( SELECT 1 FROM reservation_tables rt INNER JOIN reservation r ON rt.id_reservation = r.id_reservation AND r.date_reservation = ? INNER JOIN service s ON r.id_service = s.id_service AND s.horaire_service = ? WHERE rt.id_tables = t.id_tables )");
+			selectQuery.setDate(1, dateReservation);
+			selectQuery.setString(2, horaireService);
 			ResultSet resultSet = selectQuery.executeQuery();
 			
 			while(resultSet.next())

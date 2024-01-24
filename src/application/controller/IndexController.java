@@ -7,10 +7,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import application.entite.Reservation;
 import application.entite.ReservationWeb;
 import application.service.FileService;
 import application.service.MainService;
@@ -65,7 +67,8 @@ public class IndexController implements Initializable {
     }
 
     public void getReservationDay() {
-        nb_reservation_day.setText("X tables réservées");
+    	ArrayList<Reservation> lstReservation = this.mainService.getAllReservationByDateReservation(LocalDate.now());
+        nb_reservation_day.setText(lstReservation.size() + " réservation" + (lstReservation.size()>=2?"s":""));
     }
 
     private void insertElementInListView(String cheminFichier) {
